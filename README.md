@@ -1,45 +1,112 @@
-# ESP32 Cheap Yellow Display (CYD) Weather Station with 3 days Forecast
+<p align="center">
+  <img src="./Esp32_CYD_PirateWeather_Landscape/images/logo.jpg" alt="Weather Station – Pirate Weather" width="320">
+</p>
 
-This is the accompanying repository for my article "Create an Internet Weather Station with 3 days Forecast on an ESP32 Cheap Yellow Display ("CYD")" available here: https://medium.com/@androidcrypto/create-an-internet-weather-station-with-3-days-forecast-on-an-esp32-cheap-yellow-display-cyd-15eb5c353b1d
+<h1 align="center">☀️ CYD Weather Station – Pirate Weather Edition</h1>
 
-For short - what is a "Cheap Yellow Display" ? This device was introduced some years ago and allowed for very fast development of projects where an ESP32, a TFT (optional Touch surface), an SD Card Reader and an RGB LED is required. The first version was equipped with a 2.8 inch large TFT display with **ILI9341** driver chip and **XPT2046** resistive Touch driver chip. Newer versions are sold with a **ST7789** display driver chip. Nowadays, the device is available with different display sizes (1.28 up to 7 inches) and driver chips, but I'm focusing on the 2.8 inch variants. The display has a size of **320 x 240** pixels in Landscape orientation. Most of the devices are driven by an ESP32 WROOM microcontroller, but I saw some others with an ESP32-S3 chip.
+<p align="center">
+  <b>A touch-enabled, animated weather station for the 2.8" ESP32 "Cheap Yellow Display" – landscape layout, Pirate Weather forecasts, web interface with live screenshot and optional Home Assistant pages.</b>
+</p>
 
-![Image 1](./images/esp32_cyd_weather_station_01_600h.png)
+<p align="center">
+  <img alt="ESP32" src="https://img.shields.io/badge/ESP32-2432S028R-E7352C?logo=espressif&logoColor=white">
+  <img alt="Arduino" src="https://img.shields.io/badge/Arduino%20IDE-2.x-00979D?logo=arduino&logoColor=white">
+  <img alt="Pirate Weather" src="https://img.shields.io/badge/data-Pirate%20Weather-1f6feb">
+  <img alt="Home Assistant" src="https://img.shields.io/badge/Home%20Assistant-optional-41BDF5?logo=homeassistant&logoColor=white">
+  <img alt="License" src="https://img.shields.io/badge/license-MIT-green">
+</p>
 
-## Set up the TFT_eSPI library
+---
 
-Please don't forget to copy the files "*Setup801_ESP32_CYD_ILI9341_240x320.h*" and "*Setup805_ESP32_CYD_ST7789_240x320.h*" in the "User_Setups" folder of the TFT_eSPI library and edit the 
-"*User_Setup_Select.h*" to include the set up, depending on your CYD board type (ILI9341 or ST7789).
+## 📸 Screenshots
 
-## Required Libraries
-````plaintext
-TFT_eSPI Version: 2.4.3 *1) (https://github.com/Bodmer/TFT_eSPI)
-OpenWeather Version: Feb 16, 2023 (https://github.com/Bodmer/OpenWeather)
-JSON_Decoder Version: n.a. (https://github.com/Bodmer/JSON_Decoder)
-TJpg_Decoder Version: 1.1.0 (https://github.com/Bodmer/TJpg_Decoder)
-Timezone Version: 1.2.4 (https://github.com/JChristensen/Timezone)
+Real screenshots taken from the running device through its own web interface (`/api/screenshot.bmp`).
 
-*1) In case you encounter any problems with the TFT_eSPI library you should consider to use my forked TFT_eSPI library that solved some problems, see link below
-````
+| ☀️ Now | ⏱️ Hourly | 📅 8 days |
+|:---:|:---:|:---:|
+| ![Now](./Esp32_CYD_PirateWeather_Landscape/images/p1_now.png) | ![Hourly](./Esp32_CYD_PirateWeather_Landscape/images/p2_hourly.png) | ![8 days](./Esp32_CYD_PirateWeather_Landscape/images/p3_days.png) |
+| **🌊 Tide & sea** *(Home Assistant)* | **🌬️ Air & home** *(Home Assistant)* | **🔆 Menu** |
+| ![Tide](./Esp32_CYD_PirateWeather_Landscape/images/p4_tide.png) | ![Air](./Esp32_CYD_PirateWeather_Landscape/images/p5_air.png) | ![Menu](./Esp32_CYD_PirateWeather_Landscape/images/p6_menu.png) |
 
-Forked TFT_eSPI library by AndroidCrypto: https://github.com/AndroidCrypto/TFT_eSPI
+### 🎞️ Animated weather icons
 
-## This sketch uses the LittleFS file system
-The weather icons and font files are stored in the LittleFS filesystem. Before running the sketch you need to upload the files in the sketch subfolder 'data' to the ESP32, 
-for e.g. with the arduino-littlefs-upload plugin (https://github.com/earlephilhower/arduino-littlefs-upload).
+<img src="./Esp32_CYD_PirateWeather_Landscape/images/p1_now_anim.gif" alt="Animation preview" width="480">
 
-A Description can be found here: https://randomnerdtutorials.com/arduino-ide-2-install-esp32-littlefs/
+*Animation preview rendered from the firmware with a display simulator (the device draws at ~14 fps).*
 
-## Development Environment
-````plaintext
-Arduino IDE Version 2.3.6 (Windows)
-arduino-esp32 boards Version 3.2.0 (https://github.com/espressif/arduino-esp32)
-````
+---
 
-## Landscape / Pirate Weather / Touch edition
+## ✨ Highlights
 
-The folder [`Esp32_CYD_PirateWeather_Landscape`](./Esp32_CYD_PirateWeather_Landscape) contains an extended version of this
-weather station: landscape layout, Pirate Weather data (hourly 48 h, daily 8 days), touch control with calibration,
-animated weather icons, adjustable backlight with night mode, a web interface with live screenshot, REST API and
-firmware upload, and optional Home Assistant pages (tide, sea, indoor / outdoor air). It uses the same `data` folder
-(icons and fonts) as the original sketch. See its [README](./Esp32_CYD_PirateWeather_Landscape/README.md).
+- **Landscape layout** 320 × 240 – flip 180° directly on the device
+- **Pirate Weather** (free API key, ECMWF / GFS / radar nowcast): now, **24 h hourly** with temperature and rain-probability chart, **8-day forecast**, feels like, UV, rain amount
+- **Touch control** (XPT2046) with a small bit-bang driver – no extra library, no SPI conflict with TFT_eSPI – and a 3-point calibration stored in flash
+- **Animated weather icons** – rain, drizzle, snow and hail falling, lightning flashes, sun sparkle, twinkling stars, drifting clouds and fog
+- **Backlight** with 12 brightness levels, night dimming window and touch wake
+- **Web interface** – status page with **live screenshot** (click into it = tap on the display), REST API, log and **firmware upload over the air**
+- **Optional Home Assistant pages** – tide curve, waves, sea temperature, outdoor and indoor air (CO2, PM2.5, AQI), pressure trend, lightning and weather alerts, all with **one** request
+- Only **TFT_eSPI** and **ArduinoJson 7** needed – time via ESP32 SNTP and a POSIX time zone string
+
+---
+
+## 📦 Quick start
+
+1. Set up **TFT_eSPI** for your CYD exactly as described in the original sketch (`Setup801_ESP32_CYD_ILI9341_240x320.h` or `Setup805_ESP32_CYD_ST7789_240x320.h`).
+2. Install **ArduinoJson 7.x** from the Arduino Library Manager.
+3. Upload the LittleFS `data` folder (icons and fonts) from `Esp32_CYD_TFT_eSPI_OpenWeather_LittleFS_v02` – the new sketch uses the same files.
+4. Select *Tools → Partition Scheme → Default 4MB with spiffs* (needed for firmware updates over the air), open `Esp32_CYD_PirateWeather_Landscape`, edit **`All_Settings.h`** (WiFi, free [Pirate Weather](https://pirateweather.net) API key, location, time zone, web password) and flash.
+5. On first boot tap the three red crosses to calibrate the touch screen. The boot screen shows the IP address of the web interface.
+
+👉 Full documentation: **[Esp32_CYD_PirateWeather_Landscape/README.md](./Esp32_CYD_PirateWeather_Landscape/README.md)**
+
+---
+
+## 👆 Operation
+
+| Action | Result |
+|---|---|
+| Tap right two thirds | next page |
+| Tap left third | previous page |
+| Tap clock / header | menu: brightness, flip 180°, night mode, touch calibration |
+| Long press (1.5 s) | reload weather now |
+| Touch during boot | start touch calibration |
+| First touch at night | wake display only |
+
+---
+
+## 🌐 Web interface
+
+Open `http://<device-ip>/` in your browser.
+
+| Endpoint | Function |
+|---|---|
+| `/` | status page with live screenshot, log and buttons |
+| `/api/status` | JSON with weather, Home Assistant values, fetch diagnostics, heap, UI state |
+| `/api/screenshot.bmp` | current display content |
+| `/api/page?n=next` · `/api/tap?x=&y=` · `/api/refresh` | remote control |
+| `/update` | firmware upload over the air (Arduino IDE → *Sketch → Export Compiled Binary*), needs partition scheme *Default 4MB with spiffs* |
+
+---
+
+## 🏠 Home Assistant (optional)
+
+Set `HA_ENABLED true`, the URL and a long-lived access token in `All_Settings.h`, then adjust the entity IDs in **`HA_Template.h`**. The display renders one Jinja template via `POST /api/template` every two minutes – missing sensors are simply shown as `--`, so you can use only the parts you need.
+
+---
+
+## 📁 Repository layout
+
+| Folder | Content |
+|---|---|
+| [`Esp32_CYD_PirateWeather_Landscape`](./Esp32_CYD_PirateWeather_Landscape) | ⭐ this edition |
+| [`Esp32_CYD_TFT_eSPI_OpenWeather_LittleFS_v02`](./Esp32_CYD_TFT_eSPI_OpenWeather_LittleFS_v02) | original portrait sketch (OpenWeatherMap) and the shared `data` folder |
+
+---
+
+## 🙏 Credits
+
+- Original weather station by **Daniel Eichhorn** ([blog.squix.ch](https://blog.squix.ch)), adapted by **Bodmer** ([OpenWeather](https://github.com/Bodmer/OpenWeather)) and **AndroidCrypto** ([upstream repository](https://github.com/AndroidCrypto/ESP32_CYD_Weather_Station_With_Forecast), [article](https://medium.com/@androidcrypto/create-an-internet-weather-station-with-3-days-forecast-on-an-esp32-cheap-yellow-display-cyd-15eb5c353b1d))
+- Weather data: **[Pirate Weather](https://pirateweather.net)**
+- Display library: **[TFT_eSPI](https://github.com/Bodmer/TFT_eSPI)** · JSON: **[ArduinoJson](https://arduinojson.org)**
+
+MIT License – see [LICENSE](./LICENSE).
